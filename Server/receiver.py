@@ -55,14 +55,15 @@ def processMessage(messageBody):
     else:
         return 0
 
-while True:
-    message = persistent_receiver.receive_message(1000)
-    if message is None:
-        continue
-    messageBody = message.get_payload_as_string()
-    message = json.loads(messageBody)
-    print("Received message: " + str(message["messageId"]))
-    verdict = processMessage(message["message"])
-    #post new message to the broker
-    #TODO
-    persistent_receiver.ack(message)
+def messageProcessingLoop():
+    while True:
+        message = persistent_receiver.receive_message(1000)
+        if message is None:
+            continue
+        messageBody = message.get_payload_as_string()
+        message = json.loads(messageBody)
+        print("Received message: " + str(message["messageId"]))
+        verdict = processMessage(message["message"])
+        #post new message to the broker
+        #TODO
+        persistent_receiver.ack(message)
