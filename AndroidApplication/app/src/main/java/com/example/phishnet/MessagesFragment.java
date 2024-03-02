@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.phishnet.databinding.FragmentMessagesBinding;
@@ -39,6 +41,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     private RecyclerView recyclerView;
     private MessagesRecyclerAdapter messagesRecyclerAdapter;
     public static final String NEXT_SCREEN = "conversation_screen";
+    private String filePath = "conversations.csv";
 
     @Override
     public View onCreateView(
@@ -67,11 +70,12 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
         recyclerView = getView().findViewById(R.id.messagesRecyclerView);
         loadConversations();
-        if (conversationStack.size() == 0){
+        if (conversationStack == null || conversationStack.size() == 0){
             conversationStack = new Stack<Conversation>();
-            createList();
+            //createList();
+            TextView emptyMessages = getView().findViewById(R.id.empty_messages);
+            emptyMessages.setVisibility(View.VISIBLE);
         }
-
 
 
         setAdapter();
@@ -108,8 +112,12 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     @Override
     public void messageReceived(SMSMessage message) {
+
+        message.setReceived(true);
         // Send to server first before adding to recycler
         displayMessage(message);
+        TextView emptyMessages = getView().findViewById(R.id.empty_messages);
+        emptyMessages.setVisibility(View.INVISIBLE);
     }
 
     public void displayMessage(SMSMessage message){
@@ -139,14 +147,12 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     }
 
     public void saveConversations(){
-
-        FileOutputStream fos = null;
         try {
-            fos = getContext().openFileOutput("conversations.csv", Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(conversationStack);
-            os.close();
-            fos.close();
+            FileOutputStream fileOutputStream = getContext().openFileOutput(filePath, Context.MODE_PRIVATE);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(conversationStack);
+            objectOutputStream.close();
+            fileOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -156,29 +162,21 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     public void loadConversations() {
         try {
-            FileInputStream fis = getContext().openFileInput("conversations.csv");
-            ObjectInputStream is = new ObjectInputStream(fis);
-            conversationStack = (Stack<Conversation>) is.readObject();
-            is.close();
-            fis.close();
+            FileInputStream fileInputStream = getContext().openFileInput(filePath);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            conversationStack = (Stack<Conversation>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return;
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            return;
         }
     }
-            /**  File file = new File(path + "/conversations.csv");
-        try (FileOutputStream fos = getContext().openFileOutput(file.getName(), getContext().MODE_PRIVATE)) {
-            ObjectOutputStream out = new ObjectOutputStream(fos);
-            out.writeObject(conversationStack);
-            fos.close();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }**/
 }
 
