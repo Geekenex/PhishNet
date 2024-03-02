@@ -1,7 +1,8 @@
 package com.example.phishnet;
 
 
-import android.content.Context;
+import static com.example.phishnet.ConversationsData.conversationStack;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.phishnet.databinding.FragmentMessagesBinding;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -34,10 +26,10 @@ import java.util.Stack;
 public class MessagesFragment extends Fragment implements SMSReceiver.MessageListenerInterface {
 
     public FragmentMessagesBinding binding;
-    private Stack<Conversation> conversationStack;
+
     private final ArrayList<SMSMessage> convo1 = new ArrayList<>();
     private RecyclerView recyclerView;
-    private MessagesRecyclerAdapter messagesRecyclerAdapter;
+    private ConversationsRecyclerAdapter conversationsRecyclerAdapter;
     private final String filePath = "conversations.json";
 
     @Override
@@ -52,13 +44,13 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     }
     private void setAdapter(){
-        messagesRecyclerAdapter = new MessagesRecyclerAdapter(conversationStack);
+        conversationsRecyclerAdapter = new ConversationsRecyclerAdapter(conversationStack);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(messagesRecyclerAdapter);
+        recyclerView.setAdapter(conversationsRecyclerAdapter);
     }
 
 
@@ -66,7 +58,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = getView().findViewById(R.id.messagesRecyclerView);
-        loadConversations();
+        ConversationsData.loadConversations(getContext());
         if (conversationStack == null || conversationStack.size() == 0){
             conversationStack = new Stack<Conversation>();
             //createList();
@@ -76,7 +68,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
 
         setAdapter();
-        messagesRecyclerAdapter.setOnClickListener(new MessagesRecyclerAdapter.OnClickListener(){
+        conversationsRecyclerAdapter.setOnClickListener(new ConversationsRecyclerAdapter.OnClickListener(){
             @Override
             public void onClick(int position, Conversation conversation) {
                 // Passing the data to the
@@ -84,7 +76,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
               //  intent.putExtra(NEXT_SCREEN, conversation);
               //  startActivity(intent);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("conversation", conversation);
+                bundle.putString("conversationID", String.valueOf(conversation.getId()));
                 NavHostFragment.findNavController(MessagesFragment.this)
                         .navigate(R.id.action_messagesFragment_to_conversationFragment, bundle);
             }
@@ -111,6 +103,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
         message.setReceived(true);
         // Send to server first before adding to recycler
+
         displayMessage(message);
         TextView emptyMessages = requireView().findViewById(R.id.empty_messages);
         emptyMessages.setVisibility(View.INVISIBLE);
@@ -138,37 +131,8 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         }
 
         Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
-        messagesRecyclerAdapter.notifyDataSetChanged();
-        saveConversations();
-    }
-
-    public void saveConversations(){
-        try {
-            Gson gson = new Gson();
-            String json = gson.toJson(conversationStack);
-
-            FileOutputStream fileOutputStream = requireContext().openFileOutput(filePath, Context.MODE_PRIVATE);
-            PrintStream stream = new PrintStream(fileOutputStream, true, "UTF-8");
-            stream.println(json);
-            stream.close();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadConversations() {
-        try {
-            Gson gson = new Gson();
-            FileInputStream fileInputStream = requireContext().openFileInput(filePath);
-            JsonReader reader = new JsonReader(new InputStreamReader(fileInputStream));
-            Type REVIEW_TYPE = new TypeToken<Stack<Conversation>>() {}.getType();
-            conversationStack = gson.fromJson(reader, REVIEW_TYPE);
-            reader.close();
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        conversationsRecyclerAdapter.notifyDataSetChanged();
+        ConversationsData.saveConversations(getContext());
     }
 }
 

@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ConversationFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/conversation_messages_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_input"
+        android:padding="8dp" />
+
     <TextView
         android:id="@+id/phoneNumberConversationTitle"
         android:layout_width="wrap_content"
@@ -14,24 +18,30 @@
         android:text="@string/hello_blank_fragment" />
 
     <LinearLayout
+        android:id="@+id/layout_input"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <EditText
-            android:id="@+id/editTextTextMultiLine"
-            android:layout_width="364dp"
+            android:id="@+id/edit_text_message"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:ems="10"
-            android:inputType="textMultiLine" />
+            android:layout_weight="1"
+            android:hint="Type a message..."
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
 
-        <ImageButton
-            android:id="@+id/sendmsg"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/send_button" />
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send" />
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout> <!-- TODO: Update blank fragment layout -->
