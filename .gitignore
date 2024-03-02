@@ -1,2 +1,3 @@
 .env
 DigiCertGlobalRootCA.crt.pem
+__pycache__

@@ -4,7 +4,7 @@ from solace.messaging.messaging_service import MessagingService, RetryStrategy
 from solace.messaging.config.transport_security_strategy import TLS
 from solace.messaging.receiver.inbound_message import InboundMessage
 from solace.messaging.resources.queue import Queue
-
+import sender
 import json
 import os
 from dotenv import load_dotenv
@@ -55,13 +55,13 @@ def processMessage(messageBody):
 
 def messageProcessingLoop():
     while True:
-        message = persistent_receiver.receive_message(1000)
-        if message is None:
+        messageRaw = persistent_receiver.receive_message(1000)
+        if messageRaw is None:
             continue
-        messageBody = message.get_payload_as_string()
+        messageBody = messageRaw.get_payload_as_string()
         message = json.loads(messageBody)
-        print("Received message: " + str(message["messageId"]))
+        print("Received message: " + str(message["messageId"]) + ", " + message["message"])
         verdict = processMessage(message["message"])
         #post new message to the broker
-        #TODO
-        persistent_receiver.ack(message)
+        sender.sendMessageVerdict(message["messageId"], verdict)
+        persistent_receiver.ack(messageRaw)
