@@ -5,6 +5,7 @@ from solace.messaging.config.transport_security_strategy import TLS
 from solace.messaging.receiver.inbound_message import InboundMessage
 from solace.messaging.resources.queue import Queue
 
+import json
 import os
 from dotenv import load_dotenv
 
@@ -14,13 +15,13 @@ SOLACE_HOST = os.getenv("SOLACE_HOST")
 SOLACE_VPN = os.getenv("SOLACE_VPN")
 SOLACE_USERNAME = os.getenv("SOLACE_USERNAME")
 SOLACE_PASSWORD = os.getenv("SOLACE_PASSWORD")
+SOLACE_RECEIVING_QUEUE_NAME = os.getenv("SOLACE_RECEIVING_QUEUE_NAME")
 
 broker_props = {
     transport_layer_properties.HOST: SOLACE_HOST,
     service_properties.VPN_NAME: SOLACE_VPN,
     authentication_properties.SCHEME_BASIC_USER_NAME: SOLACE_USERNAME,
     authentication_properties.SCHEME_BASIC_PASSWORD: SOLACE_PASSWORD,
-    #"solace.messaging.tls.trust-store-path": "DigiCertGlobalRootCA.crt.pem",
 }
 
 transport_security = TLS.create().without_certificate_validation()
@@ -37,25 +38,30 @@ messaging_service.connect()
 
 # Creating the PersistentMessageReceiver
 # Used to recieve the messageID and messages from the broker
-
-SOLACE_RECEIVING_QUEUE_NAME = os.getenv("SOLACE_RECEIVING_QUEUE_NAME")
  
 durable_exclusive_queue = Queue.durable_exclusive_queue(SOLACE_RECEIVING_QUEUE_NAME)			
 
-# Create a PersistentMessageReceiver
-persistent_receiver= messaging_service.create_persistent_message_receiver_builder() \
-               .build(durable_exclusive_queue)
-
-# Start starts the configured PersistentMessageReceiver synchronously. Before this function is called, the receiver is considered off-duty
-persistent_receiver.start()
-						
 
 persistent_receiver= messaging_service.create_persistent_message_receiver_builder() \
                 .build(durable_exclusive_queue)
 persistent_receiver.start()		
 
 
-while True:
-    message = persistent_receiver.receive_message(1000)
-    print("Received message: " + str(message))
-    
+def processMessage(messageBody):
+    if len(messageBody) > 0 and messageBody[0] == "a":
+        return 1
+    else:
+        return 0
+
+def messageProcessingLoop():
+    while True:
+        message = persistent_receiver.receive_message(1000)
+        if message is None:
+            continue
+        messageBody = message.get_payload_as_string()
+        message = json.loads(messageBody)
+        print("Received message: " + str(message["messageId"]))
+        verdict = processMessage(message["message"])
+        #post new message to the broker
+        #TODO
+        persistent_receiver.ack(message)
