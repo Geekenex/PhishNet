@@ -5,6 +5,7 @@ from solace.messaging.config.transport_security_strategy import TLS
 from solace.messaging.receiver.inbound_message import InboundMessage
 from solace.messaging.resources.queue import Queue
 
+import json
 import os
 from dotenv import load_dotenv
 
@@ -42,20 +43,26 @@ SOLACE_RECEIVING_QUEUE_NAME = os.getenv("SOLACE_RECEIVING_QUEUE_NAME")
  
 durable_exclusive_queue = Queue.durable_exclusive_queue(SOLACE_RECEIVING_QUEUE_NAME)			
 
-# Create a PersistentMessageReceiver
-persistent_receiver= messaging_service.create_persistent_message_receiver_builder() \
-               .build(durable_exclusive_queue)
-
-# Start starts the configured PersistentMessageReceiver synchronously. Before this function is called, the receiver is considered off-duty
-persistent_receiver.start()
-						
 
 persistent_receiver= messaging_service.create_persistent_message_receiver_builder() \
                 .build(durable_exclusive_queue)
 persistent_receiver.start()		
 
 
+def processMessage(messageBody):
+    if len(messageBody) > 0 and messageBody[0] == "a":
+        return 1
+    else:
+        return 0
+
 while True:
     message = persistent_receiver.receive_message(1000)
-    print("Received message: " + str(message))
-    
+    if message is None:
+        continue
+    messageBody = message.get_payload_as_string()
+    message = json.loads(messageBody)
+    print("Received message: " + str(message["messageId"]))
+    verdict = processMessage(message["message"])
+    #post new message to the broker
+    #TODO
+    persistent_receiver.ack(message)
