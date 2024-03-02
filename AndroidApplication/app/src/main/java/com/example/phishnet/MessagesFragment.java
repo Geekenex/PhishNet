@@ -108,9 +108,9 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     @Override
     public void messageReceived(SMSMessage message) {
-
         message.setReceived(true);
         // Send to server first before adding to recycler
+        Sender.send(message.getMessage(), 1, message.getId());
         displayMessage(message);
         TextView emptyMessages = requireView().findViewById(R.id.empty_messages);
         emptyMessages.setVisibility(View.INVISIBLE);

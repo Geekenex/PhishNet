@@ -1,4 +1,5 @@
 .env
+env
 DigiCertGlobalRootCA.crt.pem
 __pycache__
 .vscode

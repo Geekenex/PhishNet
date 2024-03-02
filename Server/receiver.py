@@ -47,13 +47,6 @@ persistent_receiver= messaging_service.create_persistent_message_receiver_builde
                 .build(durable_exclusive_queue)
 persistent_receiver.start()		
 
-
-def processMessage(messageBody):
-    if len(messageBody) > 0 and messageBody[0] == "a":
-        return 1
-    else:
-        return 0
-
 def messageProcessingLoop():
     while True:
         messageRaw = persistent_receiver.receive_message(1000)
