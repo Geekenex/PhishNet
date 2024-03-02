@@ -1,19 +1,18 @@
 package com.example.phishnet;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,13 @@ import android.widget.Toast;
 
 import com.example.phishnet.databinding.FragmentMessagesBinding;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -60,9 +66,14 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = getView().findViewById(R.id.messagesRecyclerView);
-        conversationStack = new Stack<Conversation>();
+        loadConversations();
+        if (conversationStack.size() == 0){
+            conversationStack = new Stack<Conversation>();
+            createList();
+        }
 
-        CreateList();
+
+
         setAdapter();
         messagesRecyclerAdapter.setOnClickListener(new MessagesRecyclerAdapter.OnClickListener(){
             @Override
@@ -86,7 +97,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         binding = null;
     }
 
-    private void CreateList() {
+    private void createList() {
         convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
         convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
         convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
@@ -124,5 +135,50 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
         Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         messagesRecyclerAdapter.notifyDataSetChanged();
+        saveConversations();
     }
+
+    public void saveConversations(){
+
+        FileOutputStream fos = null;
+        try {
+            fos = getContext().openFileOutput("conversations.csv", Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(conversationStack);
+            os.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadConversations() {
+        try {
+            FileInputStream fis = getContext().openFileInput("conversations.csv");
+            ObjectInputStream is = new ObjectInputStream(fis);
+            conversationStack = (Stack<Conversation>) is.readObject();
+            is.close();
+            fis.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+            /**  File file = new File(path + "/conversations.csv");
+        try (FileOutputStream fos = getContext().openFileOutput(file.getName(), getContext().MODE_PRIVATE)) {
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            out.writeObject(conversationStack);
+            fos.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }**/
 }
+

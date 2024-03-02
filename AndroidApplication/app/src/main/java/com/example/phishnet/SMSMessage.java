@@ -1,15 +1,18 @@
 package com.example.phishnet;
 
-public class SMSMessage {
+import java.io.Serializable;
+import java.util.UUID;
+
+public class SMSMessage implements Serializable {
     private String phoneNumber;
     private String message;
-    private int id;
-    private static int count = 0;
+    private UUID id;
+
 
     public SMSMessage(String phoneNumber, String message){
         this.phoneNumber = phoneNumber;
         this.message = message;
-        id = ++count;
+        id = UUID.randomUUID();
     }
 
     public String getPhoneNumber() {
@@ -28,11 +31,11 @@ public class SMSMessage {
         this.message = message;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 }
