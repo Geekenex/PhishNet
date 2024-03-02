@@ -21,14 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.phishnet.databinding.FragmentMessagesBinding;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -41,7 +48,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     private RecyclerView recyclerView;
     private MessagesRecyclerAdapter messagesRecyclerAdapter;
     public static final String NEXT_SCREEN = "conversation_screen";
-    private String filePath = "conversations.csv";
+    private String filePath = "conversations.json";
 
     @Override
     public View onCreateView(
@@ -148,10 +155,13 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     public void saveConversations(){
         try {
+            Gson gson = new Gson();
+            String json = gson.toJson(conversationStack);
+
             FileOutputStream fileOutputStream = getContext().openFileOutput(filePath, Context.MODE_PRIVATE);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(conversationStack);
-            objectOutputStream.close();
+            PrintStream stream = new PrintStream(fileOutputStream, true, "UTF-8");
+            stream.println(json);
+            stream.close();
             fileOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -162,18 +172,17 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     public void loadConversations() {
         try {
+            Gson gson = new Gson();
             FileInputStream fileInputStream = getContext().openFileInput(filePath);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            conversationStack = (Stack<Conversation>) objectInputStream.readObject();
-            objectInputStream.close();
+            JsonReader reader = new JsonReader(new InputStreamReader(fileInputStream));
+            Type REVIEW_TYPE = new TypeToken<Stack<Conversation>>() {}.getType();
+            conversationStack = gson.fromJson(reader, REVIEW_TYPE);
+            reader.close();
             fileInputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
         } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return;
         }
