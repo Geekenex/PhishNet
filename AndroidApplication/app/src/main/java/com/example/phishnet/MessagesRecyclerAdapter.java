@@ -13,55 +13,33 @@ import java.util.Stack;
 
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.ViewHolder> {
     private ArrayList<SMSMessage> messageArrayList;
-    private Stack<Conversation> conversationStack;
-    private OnClickListener listener;
-    public MessagesRecyclerAdapter(Stack<Conversation> conversationStack) {
-        this.conversationStack = conversationStack;
+    public MessagesRecyclerAdapter(ArrayList<SMSMessage> messageArrayList) {
+        this.messageArrayList = messageArrayList;
     }
 
-    public interface OnClickListener {
-        void onClick(int position, Conversation conversation);
-    }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView phoneNumber;
-        private TextView messagePreview;
+        private TextView message;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            phoneNumber = itemView.findViewById(R.id.phoneNumberTitle);
-            messagePreview = itemView.findViewById(R.id.messagePreviewText);
+            message = itemView.findViewById(R.id.messageText);
         }
     }
     @NonNull
     @Override
     public MessagesRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_view_item, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerAdapter.ViewHolder holder, int position) {
-        Conversation conversation = conversationStack.get(position);
-        int tempPos = position;
-        String number = conversationStack.get(position).getPhoneNumber();
-        holder.phoneNumber.setText(number);
-        ArrayList<SMSMessage> temp = conversationStack.get(position).getSmsMessages();
-        String messagePreview = temp.get(temp.size() - 1).getMessage();
-        holder.messagePreview.setText(messagePreview);
+        SMSMessage messageObject = messageArrayList.get(position);
+        String messageText = messageObject.getMessage();
+        holder.message.setText(messageText);
+    }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null) {
-                    listener.onClick(tempPos, conversation);
-                }
-            }
-        });
-    }
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.listener = onClickListener;
-    }
     @Override
     public int getItemCount() {
-        return conversationStack.size();
+        return messageArrayList.size();
     }
 }
