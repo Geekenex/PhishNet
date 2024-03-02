@@ -15,13 +15,13 @@ SOLACE_HOST = os.getenv("SOLACE_HOST")
 SOLACE_VPN = os.getenv("SOLACE_VPN")
 SOLACE_USERNAME = os.getenv("SOLACE_USERNAME")
 SOLACE_PASSWORD = os.getenv("SOLACE_PASSWORD")
+SOLACE_RECEIVING_QUEUE_NAME = os.getenv("SOLACE_RECEIVING_QUEUE_NAME")
 
 broker_props = {
     transport_layer_properties.HOST: SOLACE_HOST,
     service_properties.VPN_NAME: SOLACE_VPN,
     authentication_properties.SCHEME_BASIC_USER_NAME: SOLACE_USERNAME,
     authentication_properties.SCHEME_BASIC_PASSWORD: SOLACE_PASSWORD,
-    #"solace.messaging.tls.trust-store-path": "DigiCertGlobalRootCA.crt.pem",
 }
 
 transport_security = TLS.create().without_certificate_validation()
@@ -38,8 +38,6 @@ messaging_service.connect()
 
 # Creating the PersistentMessageReceiver
 # Used to recieve the messageID and messages from the broker
-
-SOLACE_RECEIVING_QUEUE_NAME = os.getenv("SOLACE_RECEIVING_QUEUE_NAME")
  
 durable_exclusive_queue = Queue.durable_exclusive_queue(SOLACE_RECEIVING_QUEUE_NAME)			
 
