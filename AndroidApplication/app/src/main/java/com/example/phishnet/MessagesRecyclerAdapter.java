@@ -9,12 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.ViewHolder> {
     private ArrayList<SMSMessage> messageArrayList;
-
-    public MessagesRecyclerAdapter(ArrayList<SMSMessage> messageArrayList) {
-        this.messageArrayList = messageArrayList;
+    private Stack<Conversation> conversationStack;
+    public MessagesRecyclerAdapter(Stack<Conversation> conversationStack) {
+        this.conversationStack = conversationStack;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -35,14 +36,16 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerAdapter.ViewHolder holder, int position) {
-        String number = messageArrayList.get(position).getPhoneNumber();
+
+        String number = conversationStack.get(position).getPhoneNumber();
         holder.phoneNumber.setText(number);
-        String messagePreview = messageArrayList.get(position).getMessage();
+        ArrayList<SMSMessage> temp = conversationStack.get(position).getSmsMessages();
+        String messagePreview = temp.get(temp.size() - 1).getMessage();
         holder.messagePreview.setText(messagePreview);
     }
 
     @Override
     public int getItemCount() {
-        return messageArrayList.size();
+        return conversationStack.size();
     }
 }

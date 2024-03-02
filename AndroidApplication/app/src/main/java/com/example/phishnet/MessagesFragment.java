@@ -19,12 +19,14 @@ import android.widget.Toast;
 import com.example.phishnet.databinding.FragmentMessagesBinding;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 
 public class MessagesFragment extends Fragment implements SMSReceiver.MessageListenerInterface {
 
     public FragmentMessagesBinding binding;
-    private ArrayList<SMSMessage> messageArrayList;
+    private Stack<Conversation> conversationStack;
+    private ArrayList<SMSMessage> convo1 = new ArrayList<SMSMessage>();
     private RecyclerView recyclerView;
     private MessagesRecyclerAdapter messagesRecyclerAdapter;
 
@@ -40,8 +42,10 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     }
     private void setAdapter(){
-        messagesRecyclerAdapter = new MessagesRecyclerAdapter(messageArrayList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        messagesRecyclerAdapter = new MessagesRecyclerAdapter(conversationStack);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(messagesRecyclerAdapter);
@@ -52,7 +56,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = getView().findViewById(R.id.messagesRecyclerView);
-        messageArrayList = new ArrayList<SMSMessage>();
+        conversationStack = new Stack<Conversation>();
 
         CreateList();
         setAdapter();
@@ -72,17 +76,31 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     }
 
     private void CreateList() {
-        messageArrayList.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        messageArrayList.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        messageArrayList.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        messageArrayList.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        messageArrayList.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash :)"));
+
+        conversationStack.push(new Conversation(convo1, "514-625-5276"));
     }
 
     @Override
     public void messageReceived(SMSMessage message) {
-        // Send to server
-        messageArrayList.add(message);
+        // Send to server first before adding to recycler
+        Boolean convoExists = false;
+        for (Conversation convo: conversationStack) {
+            if (convo.getPhoneNumber().equals(message.getPhoneNumber())){
+                convo.getSmsMessages().add(message);
+                convoExists = true;
+            }
+        }
+        // If the conversation did not exist before, create a new one.
+        if (!convoExists){
+            ArrayList<SMSMessage> tempMessages = new ArrayList<>();
+            tempMessages.add(message);
+            Conversation convo = new Conversation(tempMessages, message.getPhoneNumber());
+            conversationStack.push(convo);
+        }
         Toast.makeText(getActivity().getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
         messagesRecyclerAdapter.notifyDataSetChanged();
     }
