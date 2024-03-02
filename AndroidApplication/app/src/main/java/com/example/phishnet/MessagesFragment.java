@@ -72,8 +72,11 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         loadConversations();
         if (conversationStack == null || conversationStack.size() == 0){
             conversationStack = new Stack<Conversation>();
-            createList();
+            //createList();
+            TextView emptyMessages = getView().findViewById(R.id.empty_messages);
+            emptyMessages.setVisibility(View.VISIBLE);
         }
+
 
         setAdapter();
         messagesRecyclerAdapter.setOnClickListener(new MessagesRecyclerAdapter.OnClickListener(){
@@ -109,9 +112,12 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     @Override
     public void messageReceived(SMSMessage message) {
+
         message.setReceived(true);
         // Send to server first before adding to recycler
         displayMessage(message);
+        TextView emptyMessages = getView().findViewById(R.id.empty_messages);
+        emptyMessages.setVisibility(View.INVISIBLE);
     }
 
     public void displayMessage(SMSMessage message){

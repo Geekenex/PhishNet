@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/messagesFragment"
         android:name="com.example.phishnet.MessagesFragment"
-        android:label="fragment_messages"
+        android:label="@string/message_fragment_label"
         tools:layout="@layout/fragment_messages" >
         <action
             android:id="@+id/action_messagesFragment_to_FirstFragment"
@@ -40,6 +40,6 @@
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.example.phishnet.ConversationFragment"
-        android:label="fragment_conversation"
+        android:label="Your Conversation"
         tools:layout="@layout/fragment_conversation" />
 </navigation>
