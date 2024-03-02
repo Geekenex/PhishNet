@@ -29,7 +29,8 @@ public class SMSReceiver extends BroadcastReceiver {
                     strMessage += "SMS from " + msgs[i].getOriginatingAddress();
                     strMessage += " :" + msgs[i].getMessageBody() + "\n";
 
-                    mListener.messageReceived(strMessage);
+                    SMSMessage message = new SMSMessage(msgs[i].getOriginatingAddress(), msgs[i].getMessageBody());
+                    mListener.messageReceived(message);
                 }
             }
         }
@@ -37,7 +38,7 @@ public class SMSReceiver extends BroadcastReceiver {
 
     public interface MessageListenerInterface {
         // creating an interface method for messages received.
-        void messageReceived(String message);
+        void messageReceived(SMSMessage message);
     }
     public static void bindListener(MessageListenerInterface listener) {
         mListener = listener;

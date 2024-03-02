@@ -27,7 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements SMSReceiver.MessageListenerInterface {
+public class MainActivity extends AppCompatActivity {
     private static final int RECEIVE_SMS_CODE = 100;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceiver.Messa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SMSReceiver.bindListener(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -85,11 +84,6 @@ public class MainActivity extends AppCompatActivity implements SMSReceiver.Messa
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    public void messageReceived(String message) {
-        // Send to server
-        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
 
     // Function to check and request permission.
     public void checkPermission(String permission, int requestCode)
