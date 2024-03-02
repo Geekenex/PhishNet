@@ -87,11 +87,20 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     @Override
     public void messageReceived(SMSMessage message) {
         // Send to server first before adding to recycler
-        Boolean convoExists = false;
+        displayMessage(message);
+    }
+
+    public void displayMessage(SMSMessage message){
+        boolean convoExists = false;
         for (Conversation convo: conversationStack) {
             if (convo.getPhoneNumber().equals(message.getPhoneNumber())){
                 convo.getSmsMessages().add(message);
                 convoExists = true;
+                Conversation temp = conversationStack.get(conversationStack.size() - 1);
+                int index = conversationStack.indexOf(convo);
+                conversationStack.set(conversationStack.size() - 1, convo);
+                conversationStack.set(index, temp);
+
             }
         }
         // If the conversation did not exist before, create a new one.
@@ -101,8 +110,8 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
             Conversation convo = new Conversation(tempMessages, message.getPhoneNumber());
             conversationStack.push(convo);
         }
-        Toast.makeText(getActivity().getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+
+        Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         messagesRecyclerAdapter.notifyDataSetChanged();
     }
-
 }
