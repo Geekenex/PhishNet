@@ -16,6 +16,3 @@ def scamcheck(text):
         predicted_label = torch.argmax(outputs.logits, dim=1).item()
 
     print(predicted_label)
-
-
-scamcheck("INTERAC e-Transfer: JACQUELINE ANDRADE SANCHEZ sent you money. See https://et.interac.ca/sl/wzVjShR98WIy. Data rates may apply")

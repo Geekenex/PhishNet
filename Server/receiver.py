@@ -8,6 +8,7 @@ import sender
 import json
 import os
 from dotenv import load_dotenv
+import ScamScript
 
 load_dotenv()
 
@@ -61,7 +62,6 @@ def messageProcessingLoop():
         messageBody = messageRaw.get_payload_as_string()
         message = json.loads(messageBody)
         print("Received message: " + str(message["messageId"]) + ", " + message["message"])
-        verdict = processMessage(message["message"])
-        #post new message to the broker
+        verdict = ScamScript.scamcheck(message["message"])
         sender.sendMessageVerdict(message["messageId"], verdict)
         persistent_receiver.ack(messageRaw)
