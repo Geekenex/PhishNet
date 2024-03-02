@@ -1,10 +1,13 @@
 package com.example.phishnet;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +32,7 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     private ArrayList<SMSMessage> convo1 = new ArrayList<SMSMessage>();
     private RecyclerView recyclerView;
     private MessagesRecyclerAdapter messagesRecyclerAdapter;
+    public static final String NEXT_SCREEN = "conversation_screen";
 
     @Override
     public View onCreateView(
@@ -60,11 +64,18 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
         CreateList();
         setAdapter();
-        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
+        messagesRecyclerAdapter.setOnClickListener(new MessagesRecyclerAdapter.OnClickListener(){
             @Override
-            public void onClick(View view) {
+            public void onClick(int position, Conversation conversation) {
+                Intent intent = new Intent(getActivity(), Conversation.class);
+                // Passing the data to the
+                Toast.makeText(getActivity().getApplicationContext(), conversation.getPhoneNumber(), Toast.LENGTH_LONG).show();
+              //  intent.putExtra(NEXT_SCREEN, conversation);
+              //  startActivity(intent);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("conversation", conversation);
                 NavHostFragment.findNavController(MessagesFragment.this)
-                        .navigate(R.id.action_messagesFragment_to_FirstFragment);
+                        .navigate(R.id.action_messagesFragment_to_conversationFragment, bundle);
             }
         });
     }
@@ -87,11 +98,20 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     @Override
     public void messageReceived(SMSMessage message) {
         // Send to server first before adding to recycler
-        Boolean convoExists = false;
+        displayMessage(message);
+    }
+
+    public void displayMessage(SMSMessage message){
+        boolean convoExists = false;
         for (Conversation convo: conversationStack) {
             if (convo.getPhoneNumber().equals(message.getPhoneNumber())){
                 convo.getSmsMessages().add(message);
                 convoExists = true;
+                Conversation temp = conversationStack.get(conversationStack.size() - 1);
+                int index = conversationStack.indexOf(convo);
+                conversationStack.set(conversationStack.size() - 1, convo);
+                conversationStack.set(index, temp);
+
             }
         }
         // If the conversation did not exist before, create a new one.
@@ -101,8 +121,8 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
             Conversation convo = new Conversation(tempMessages, message.getPhoneNumber());
             conversationStack.push(convo);
         }
-        Toast.makeText(getActivity().getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+
+        Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         messagesRecyclerAdapter.notifyDataSetChanged();
     }
-
 }

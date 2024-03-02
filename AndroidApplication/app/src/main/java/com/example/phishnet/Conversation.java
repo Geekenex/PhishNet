@@ -1,8 +1,9 @@
 package com.example.phishnet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Conversation {
+public class Conversation implements Serializable {
     private ArrayList<SMSMessage> smsMessages;
     private String phoneNumber;
 

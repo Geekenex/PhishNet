@@ -14,10 +14,14 @@ import java.util.Stack;
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.ViewHolder> {
     private ArrayList<SMSMessage> messageArrayList;
     private Stack<Conversation> conversationStack;
+    private OnClickListener listener;
     public MessagesRecyclerAdapter(Stack<Conversation> conversationStack) {
         this.conversationStack = conversationStack;
     }
 
+    public interface OnClickListener {
+        void onClick(int position, Conversation conversation);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView phoneNumber;
         private TextView messagePreview;
@@ -36,14 +40,26 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerAdapter.ViewHolder holder, int position) {
-
+        Conversation conversation = conversationStack.get(position);
+        int tempPos = position;
         String number = conversationStack.get(position).getPhoneNumber();
         holder.phoneNumber.setText(number);
         ArrayList<SMSMessage> temp = conversationStack.get(position).getSmsMessages();
         String messagePreview = temp.get(temp.size() - 1).getMessage();
         holder.messagePreview.setText(messagePreview);
-    }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) {
+                    listener.onClick(tempPos, conversation);
+                }
+            }
+        });
+    }
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.listener = onClickListener;
+    }
     @Override
     public int getItemCount() {
         return conversationStack.size();
