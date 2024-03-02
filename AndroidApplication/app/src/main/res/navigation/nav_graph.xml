@@ -33,5 +33,13 @@
         <action
             android:id="@+id/action_messagesFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_messagesFragment_to_conversationFragment"
+            app:destination="@id/conversationFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/conversationFragment"
+        android:name="com.example.phishnet.ConversationFragment"
+        android:label="fragment_conversation"
+        tools:layout="@layout/fragment_conversation" />
 </navigation>
