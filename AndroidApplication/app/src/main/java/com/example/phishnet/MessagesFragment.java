@@ -139,14 +139,12 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
     }
 
     public void saveConversations(){
-
-        FileOutputStream fos = null;
         try {
-            fos = getContext().openFileOutput("conversations.csv", Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(conversationStack);
-            os.close();
-            fos.close();
+            FileOutputStream fileOutputStream = getContext().openFileOutput("conversations.csv", Context.MODE_PRIVATE);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(conversationStack);
+            objectOutputStream.close();
+            fileOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -156,11 +154,11 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
 
     public void loadConversations() {
         try {
-            FileInputStream fis = getContext().openFileInput("conversations.csv");
-            ObjectInputStream is = new ObjectInputStream(fis);
-            conversationStack = (Stack<Conversation>) is.readObject();
-            is.close();
-            fis.close();
+            FileInputStream fileInputStream = getContext().openFileInput("conversations.csv");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            conversationStack = (Stack<Conversation>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -169,16 +167,5 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
             e.printStackTrace();
         }
     }
-            /**  File file = new File(path + "/conversations.csv");
-        try (FileOutputStream fos = getContext().openFileOutput(file.getName(), getContext().MODE_PRIVATE)) {
-            ObjectOutputStream out = new ObjectOutputStream(fos);
-            out.writeObject(conversationStack);
-            fos.close();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }**/
 }
 
