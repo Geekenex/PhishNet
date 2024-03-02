@@ -1,11 +1,14 @@
 package com.example.phishnet;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.Telephony;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -17,8 +20,9 @@ import com.example.phishnet.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SMSReceiver.MessageListenerInterface {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SMSReceiver.bindListener(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -72,5 +77,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void messageReceived(String message) {
+        // Send to server
+        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 }

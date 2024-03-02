@@ -1,5 +1,6 @@
 package com.example.phishnet;
 
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class MessagesFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
