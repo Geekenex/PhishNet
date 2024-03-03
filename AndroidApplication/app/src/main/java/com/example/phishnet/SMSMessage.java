@@ -8,13 +8,15 @@ public class SMSMessage implements Serializable {
     private String message;
     private UUID id;
     private UUID conversationId;
-    private boolean received = false;
+    private boolean received = true;
+    private int flag;
 
 
     public SMSMessage(String phoneNumber, String message){
         this.phoneNumber = phoneNumber;
         this.message = message;
         id = UUID.randomUUID();
+        setFlag(1);
     }
 
     public String getPhoneNumber() {
@@ -47,6 +49,8 @@ public class SMSMessage implements Serializable {
 
     public void setReceived(boolean received) {
         this.received = received;
+        if (!received)
+            this.setFlag(0);
     }
 
     public UUID getConversationId() {
@@ -55,5 +59,13 @@ public class SMSMessage implements Serializable {
 
     public void setConversationId(UUID conversationId) {
         this.conversationId = conversationId;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
     }
 }

@@ -95,7 +95,9 @@ public class ConversationFragment extends Fragment {
             public void onClick(View view) {
                 String inputString = inputField.getText().toString();
                 if (!inputString.isEmpty() || !inputString.equals("")){
-                    ConversationsData.addMessageToConversation(new SMSMessage(mConversation.getPhoneNumber(), inputString));
+                    SMSMessage message = (new SMSMessage(mConversation.getPhoneNumber(), inputString));
+                    message.setReceived(false);
+                    ConversationsData.addMessageToConversation(message);
 
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(mConversation.getPhoneNumber(), null, inputString, null, null);

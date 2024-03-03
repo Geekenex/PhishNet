@@ -58,6 +58,16 @@ public class ConversationsData {
         return null;
     }
 
+    public static SMSMessage getMessageById(Conversation conversation, UUID id){
+        for (SMSMessage message : conversation.getSmsMessages()){
+            if (message.getId().equals(id)){
+                return message;
+            }
+        }
+
+        return null;
+    }
+
     public static void addMessageToConversation(SMSMessage message){
         boolean convoExists = false;
         for (Conversation convo: conversationStack) {
@@ -80,6 +90,15 @@ public class ConversationsData {
             Conversation convo = new Conversation(tempMessages, message.getPhoneNumber());
             message.setConversationId(convo.getId());
             conversationStack.push(convo);
+        }
+    }
+
+    public static void updateMessageFlag(UUID conversationId, UUID messageId, int flagValue){
+        Conversation conversation = getConversationById(conversationId);
+        SMSMessage message = getMessageById(conversation, messageId);
+
+        if (message != null){
+            message.setFlag(flagValue);
         }
     }
 }

@@ -52,7 +52,7 @@ def messageProcessingLoop():
         messageRaw = persistent_receiver.receive_message(1000)
         if messageRaw is None:
             continue
-        messageBody = messageRaw.get_payload_as_string()
+        messageBody = messageRaw.get_payload_as_bytes()
         message = json.loads(messageBody)
         print("Received message: " + message["messageId"] + ", conversation: " + message["conversationId"] + ", msg:" + message["message"])
         verdict = ScamScript.combinedcheck(message["message"])

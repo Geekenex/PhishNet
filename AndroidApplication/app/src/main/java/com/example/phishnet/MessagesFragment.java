@@ -2,6 +2,7 @@ package com.example.phishnet;
 
 
 import static com.example.phishnet.ConversationsData.conversationStack;
+import static com.example.phishnet.ConversationsData.updateMessageFlag;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.example.phishnet.databinding.FragmentMessagesBinding;
 
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.UUID;
 
 
 public class MessagesFragment extends Fragment {
@@ -71,7 +73,6 @@ public class MessagesFragment extends Fragment {
             emptyMessages.setVisibility(View.VISIBLE);
         }
 
-
         setAdapter();
         conversationsRecyclerAdapter.setOnClickListener(new ConversationsRecyclerAdapter.OnClickListener(){
             @Override
@@ -90,6 +91,7 @@ public class MessagesFragment extends Fragment {
 
     private void displayMessage(SMSMessage message){
         //Sender.sendMessageAsync(message.getMessage(), 1, message.getId());
+        message.setReceived(true);
         ConversationsData.addMessageToConversation(message);
         Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         conversationsRecyclerAdapter.notifyDataSetChanged();
