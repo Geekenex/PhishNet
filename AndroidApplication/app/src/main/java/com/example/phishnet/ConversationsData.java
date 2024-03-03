@@ -95,6 +95,9 @@ public class ConversationsData {
 
     public static void updateMessageFlag(UUID conversationId, UUID messageId, int flagValue){
         Conversation conversation = getConversationById(conversationId);
+        if(conversation == null)
+            return;
+
         SMSMessage message = getMessageById(conversation, messageId);
 
         if (message != null){

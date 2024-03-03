@@ -1,18 +1,13 @@
 package com.example.phishnet;
 
 import android.Manifest;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.provider.Telephony;
-import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,6 +21,8 @@ import com.example.phishnet.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RECEIVE_SMS_CODE = 100;
@@ -54,13 +51,25 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             while(true) {
                 // Receive message
-                String message = Receiver.getNextMessage();
+                String messageRaw = Receiver.getNextMessage();
+                if(messageRaw == null || messageRaw.isEmpty()) Thread.yield();
 
-                // Update stored message if its not a scam/spam
+                else {
+                    System.out.println(messageRaw);
+                    String[] messageParts = messageRaw.replaceAll("\"|\\{|\\}","").split(",");
 
-                // Update lastEmpty if no message was found
-                if(message == null || message.isEmpty()) Thread.yield();
-                else System.out.println(message);
+                    for (int i = 0; i < messageParts.length; i++) {
+                        messageParts[i] = messageParts[i].substring(messageParts[i].indexOf(":")+1).trim();
+                        System.out.println(messageParts[i]);
+                    }
+
+                    UUID messageId = UUID.fromString(messageParts[0]);
+                    UUID conversationId = UUID.fromString(messageParts[1]);
+                    int verdict = Integer.parseInt(messageParts[2]);
+
+                    // Update stored message if its not a scam/spam
+                    ConversationsData.updateMessageFlag(conversationId,messageId,verdict);
+                }
             }
         }).start();
 
