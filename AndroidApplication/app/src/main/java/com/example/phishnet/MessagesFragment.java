@@ -90,9 +90,9 @@ public class MessagesFragment extends Fragment {
     }
 
     private void displayMessage(SMSMessage message){
+        //Sender.sendMessageAsync(message.getMessage(), 1, message.getId());
         message.setReceived(true);
-        TextView emptyMessages = getView().findViewById(R.id.empty_messages);
-        emptyMessages.setVisibility(View.INVISIBLE);
+        ConversationsData.addMessageToConversation(message);
         Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         conversationsRecyclerAdapter.notifyDataSetChanged();
         ConversationsData.saveConversations(getContext());
