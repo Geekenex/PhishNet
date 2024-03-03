@@ -95,12 +95,7 @@ public class ConversationFragment extends Fragment {
             public void onClick(View view) {
                 String inputString = inputField.getText().toString();
                 if (!inputString.isEmpty() || !inputString.equals("")){
-                    mConversation.getSmsMessages().add(new SMSMessage(mConversation.getPhoneNumber(), inputString));
-
-                    Conversation temp = conversationStack.get(conversationStack.size() - 1);
-                    int index = conversationStack.indexOf(mConversation);
-                    conversationStack.set(conversationStack.size() - 1, mConversation);
-                    conversationStack.set(index, temp);
+                    ConversationsData.addMessageToConversation(new SMSMessage(mConversation.getPhoneNumber(), inputString));
 
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(mConversation.getPhoneNumber(), null, inputString, null, null);

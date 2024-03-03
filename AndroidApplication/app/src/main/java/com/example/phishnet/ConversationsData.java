@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -56,5 +57,30 @@ public class ConversationsData {
                 return conversation;
         }
         return null;
+    }
+
+    public static void addMessageToConversation(SMSMessage message){
+        boolean convoExists = false;
+        for (Conversation convo: conversationStack) {
+            if (convo.getPhoneNumber().equals(message.getPhoneNumber())){
+                convo.getSmsMessages().add(message);
+                message.setConversationId(convo.getId());
+                convoExists = true;
+                Conversation temp = conversationStack.get(conversationStack.size() - 1);
+                int index = conversationStack.indexOf(convo);
+                conversationStack.set(conversationStack.size() - 1, convo);
+                conversationStack.set(index, temp);
+
+            }
+        }
+        // If the conversation did not exist before, create a new one.
+        if (!convoExists){
+            ArrayList<SMSMessage> tempMessages = new ArrayList<>();
+            tempMessages.add(message);
+
+            Conversation convo = new Conversation(tempMessages, message.getPhoneNumber());
+            message.setConversationId(convo.getId());
+            conversationStack.push(convo);
+        }
     }
 }
