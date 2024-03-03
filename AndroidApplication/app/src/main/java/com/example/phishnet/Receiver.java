@@ -1,4 +1,4 @@
-package com.example.phishnet;
+/**package com.example.phishnet;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -39,4 +39,4 @@ public class Receiver implements MqttCallback {
         System.out.println("Message arrived. Topic: " + topic + ", Message: " + new String(message.getPayload()));
     }
 
-}
+}**/

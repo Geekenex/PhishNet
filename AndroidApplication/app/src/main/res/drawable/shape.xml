@@ -7,10 +7,6 @@
         android:color="@color/gray">
     </solid>
 
-    <stroke
-        android:width="2dp"
-        android:color="#C4CDE0" >
-    </stroke>
 
     <padding
         android:left="5dp"

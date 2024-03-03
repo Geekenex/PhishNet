@@ -7,6 +7,7 @@ public class SMSMessage implements Serializable {
     private String phoneNumber;
     private String message;
     private UUID id;
+    private UUID conversationId;
     private boolean received = false;
 
 
@@ -46,5 +47,13 @@ public class SMSMessage implements Serializable {
 
     public void setReceived(boolean received) {
         this.received = received;
+    }
+
+    public UUID getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(UUID conversationId) {
+        this.conversationId = conversationId;
     }
 }

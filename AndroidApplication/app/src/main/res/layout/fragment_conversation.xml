@@ -41,7 +41,8 @@
             android:id="@+id/button_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:text="@string/send"
+            android:background="@drawable/send_shape"/>
     </LinearLayout>
 
-</RelativeLayout> <!-- TODO: Update blank fragment layout -->
+</RelativeLayout>
