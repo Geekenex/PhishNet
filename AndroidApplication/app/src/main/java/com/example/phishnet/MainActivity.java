@@ -1,5 +1,7 @@
 package com.example.phishnet;
 
+import static com.example.phishnet.SMSMessageListener.RunCallbacks;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -69,11 +71,23 @@ public class MainActivity extends AppCompatActivity {
 
                     // Update stored message if its not a scam/spam
                     ConversationsData.updateMessageFlag(conversationId,messageId,verdict);
+                    ConversationsData.saveConversations(this);
+                    updateMessageUI();
                 }
             }
         }).start();
 
+    }
 
+
+    // Method to update UI with a new message
+    public void updateMessageUI() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RunCallbacks();
+            }
+        });
     }
 
     @Override

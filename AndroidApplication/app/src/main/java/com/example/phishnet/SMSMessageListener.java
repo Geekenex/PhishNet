@@ -13,14 +13,24 @@ public class SMSMessageListener implements SMSReceiver.MessageListenerInterface 
     public static SMSMessage newestMessage;
     @Override
     public void messageReceived(SMSMessage message) {
+
         newestMessage = message;
-        ConversationsData.addMessageToConversation(message);
         message.setReceived(true);
+
+
+        for (Runnable callback : callbacks){
+            callback.run();
+        }
+
+        ConversationsData.addMessageToConversation(message);
+
         Sender.sendMessageAsync(message.getMessage(), message.getConversationId() , message.getId());
+
+    }
+    public static void RunCallbacks(){
         for (Runnable callback : callbacks){
             callback.run();
         }
     }
-
 
 }

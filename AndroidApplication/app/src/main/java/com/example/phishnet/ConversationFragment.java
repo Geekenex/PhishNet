@@ -2,6 +2,8 @@ package com.example.phishnet;
 
 import static com.example.phishnet.ConversationsData.conversationStack;
 
+import static java.lang.Thread.sleep;
+
 import android.content.Context;
 import android.os.Bundle;
 
@@ -66,6 +68,12 @@ public class ConversationFragment extends Fragment {
         String conversationID = getArguments().getString(ARG_CONVERSATION);
         mConversation = ConversationsData.getConversationById(UUID.fromString(conversationID));
 
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         SMSMessageListener.callbacks.add(new Runnable() {
             @Override
             public void run() {
@@ -73,12 +81,6 @@ public class ConversationFragment extends Fragment {
                 recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_conversation, container, false);
     }
 
