@@ -49,6 +49,8 @@ public class SMSMessage implements Serializable {
 
     public void setReceived(boolean received) {
         this.received = received;
+        if (received)
+            this.setFlag(0);
     }
 
     public UUID getConversationId() {
