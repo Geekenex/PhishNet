@@ -16,7 +16,7 @@ public class SMSMessageListener implements SMSReceiver.MessageListenerInterface 
         newestMessage = message;
         message.setReceived(true);
         // TODO conversationId
-        Sender.sendMessageAsync(message.getMessage(), UUID.randomUUID() , message.getId());
+        //Sender.sendMessageAsync(message.getMessage(), UUID.randomUUID() , message.getId());
         for (Runnable callback : callbacks){
             callback.run();
         }

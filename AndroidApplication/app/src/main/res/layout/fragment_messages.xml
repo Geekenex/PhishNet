@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MessagesFragment"
-    android:label="@string/message_fragment_label">
+    android:label="@string/message_fragment_label"
+    android:layout_gravity="center">
 
     <TextView
         android:id="@+id/empty_messages"

@@ -12,7 +12,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_messages_fragment">Messages will appear here</string>
-    <string name="message_fragment_label">Your Conversations</string>
+    <string name="message_fragment_label">PhishNet</string>
     <string name="hint_message">Type a message...</string>
     <string name="send">Send</string>
 </resources>

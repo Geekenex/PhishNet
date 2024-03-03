@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SMSReceiver extends BroadcastReceiver {
     public static String SMS_RECEIVE = "android.provider.Telephony.SMS_RECEIVED";
     private static MessageListenerInterface mListener;
@@ -29,10 +32,45 @@ public class SMSReceiver extends BroadcastReceiver {
                     strMessage += "SMS from " + msgs[i].getOriginatingAddress();
                     strMessage += " :" + msgs[i].getMessageBody() + "\n";
 
-                    SMSMessage message = new SMSMessage(msgs[i].getOriginatingAddress(), msgs[i].getMessageBody());
+                    String unprocessedNumber = msgs[i].getOriginatingAddress();
+                    String formattedString = formatPhoneNumber(unprocessedNumber);
+                    SMSMessage message = new SMSMessage(formattedString, msgs[i].getMessageBody());
                     mListener.messageReceived(message);
                 }
             }
+        }
+    }
+
+    // With help from ChatGPT and StackOverflow
+    public static String formatPhoneNumber(String phoneNumber) {
+        // Define regex patterns for different phone number formats
+        String patternWithCountryCode = "(\\+\\d{1,2})?(\\d{3})(\\d{3})(\\d{4})";
+        String patternWithoutCountryCode = "(\\d{3})(\\d{3})(\\d{4})";
+
+        // Create Pattern objects
+        Pattern countryCodePattern = Pattern.compile(patternWithCountryCode);
+        Pattern noCountryCodePattern = Pattern.compile(patternWithoutCountryCode);
+
+        // Match the input phone number with the patterns
+        Matcher countryCodeMatcher = countryCodePattern.matcher(phoneNumber);
+        Matcher noCountryCodeMatcher = noCountryCodePattern.matcher(phoneNumber);
+
+        if (countryCodeMatcher.matches()) {
+            // Phone number with country code
+            String countryCode = countryCodeMatcher.group(1) != null ? countryCodeMatcher.group(1) + " " : "";
+            String areaCode = countryCodeMatcher.group(2);
+            String firstPart = countryCodeMatcher.group(3);
+            String secondPart = countryCodeMatcher.group(4);
+            return countryCode + "(" + areaCode + ") " + firstPart + "-" + secondPart;
+        } else if (noCountryCodeMatcher.matches()) {
+            // Phone number without country code
+            String areaCode = noCountryCodeMatcher.group(1);
+            String firstPart = noCountryCodeMatcher.group(2);
+            String secondPart = noCountryCodeMatcher.group(3);
+            return "(" + areaCode + ") " + firstPart + "-" + secondPart;
+        } else {
+            // If the phone number doesn't match any pattern, return the original string
+            return phoneNumber;
         }
     }
 
