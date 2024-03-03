@@ -2,6 +2,7 @@ package com.example.phishnet;
 
 
 import static com.example.phishnet.ConversationsData.conversationStack;
+import static com.example.phishnet.ConversationsData.updateMessageFlag;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.example.phishnet.databinding.FragmentMessagesBinding;
 
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.UUID;
 
 
 public class MessagesFragment extends Fragment {
@@ -70,7 +72,6 @@ public class MessagesFragment extends Fragment {
             TextView emptyMessages = getView().findViewById(R.id.empty_messages);
             emptyMessages.setVisibility(View.VISIBLE);
         }
-
 
         setAdapter();
         conversationsRecyclerAdapter.setOnClickListener(new ConversationsRecyclerAdapter.OnClickListener(){

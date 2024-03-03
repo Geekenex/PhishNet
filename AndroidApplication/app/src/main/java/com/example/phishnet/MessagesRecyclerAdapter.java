@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.ViewHolder> {
     private ArrayList<SMSMessage> messageArrayList;
     public MessagesRecyclerAdapter(ArrayList<SMSMessage> messageArrayList) {
+        messageArrayList = (ArrayList<SMSMessage>) messageArrayList.stream().filter(message -> message.getFlag() == 0).collect(Collectors.toList());
         this.messageArrayList = messageArrayList;
     }
 
@@ -39,19 +41,22 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerAdapter.ViewHolder holder, int position) {
         SMSMessage messageObject = messageArrayList.get(position);
-        String messageText = messageObject.getMessage();
-        holder.message.setText(messageText);
 
-        LinearLayout layout = (LinearLayout) holder.itemView.findViewById(R.id.innerLayout);
+      //  if (messageObject.getFlag() != 1){
+            String messageText = messageObject.getMessage();
+            holder.message.setText(messageText);
 
-        if (messageObject.isReceived()){
-            layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.shape));
-            ((LinearLayout) holder.itemView).setGravity(Gravity.START);
-        }
-        else {
-            layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.blue_shape));
-            ((LinearLayout) holder.itemView).setGravity(Gravity.END);
-        }
+            LinearLayout layout = (LinearLayout) holder.itemView.findViewById(R.id.innerLayout);
+
+            if (messageObject.isReceived()){
+                layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.shape));
+                ((LinearLayout) holder.itemView).setGravity(Gravity.START);
+            }
+            else {
+                layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.blue_shape));
+                ((LinearLayout) holder.itemView).setGravity(Gravity.END);
+            }
+    //    }
     }
 
     @Override
