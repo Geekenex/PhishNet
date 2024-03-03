@@ -21,7 +21,6 @@ public class ConversationsData {
     private static final String filePath = "conversations.json";
 
     public static void saveConversations(Context context){
-        System.out.println("Saving data");
         try {
             Gson gson = new Gson();
             String json = gson.toJson(conversationStack);
