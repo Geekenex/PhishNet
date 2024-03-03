@@ -40,6 +40,5 @@
     <fragment
         android:id="@+id/conversationFragment"
         android:name="com.example.phishnet.ConversationFragment"
-        android:label="Your Conversation"
         tools:layout="@layout/fragment_conversation" />
 </navigation>

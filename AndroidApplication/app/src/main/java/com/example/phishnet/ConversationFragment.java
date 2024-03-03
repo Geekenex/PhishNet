@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,9 +86,11 @@ public class ConversationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = getView().findViewById(R.id.conversation_messages_recycler);
 
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        Toolbar toolbar = activity.findViewById(R.id.toolbar);
 
-        TextView phoneNumber = getView().findViewById(R.id.phoneNumberConversationTitle);
-        phoneNumber.setText(mConversation.getPhoneNumber());
+        toolbar.setTitle(mConversation.getPhoneNumber());
+
         EditText inputField = getView().findViewById(R.id.edit_text_message);
         Button submitButton = getView().findViewById(R.id.button_send);
         InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

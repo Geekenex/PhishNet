@@ -50,7 +50,6 @@ class MessageReceiptListener(MessagePublishReceiptListener):
     def on_publish_receipt(self, publish_receipt: 'PublishReceipt'):
         with lock:
             self._receipt_count += 1
-            print(f"\npublish_receipt:\n {self.receipt_count}\n")
 
 broker_props = {
     transport_layer_properties.HOST: SOLACE_HOST,
@@ -97,6 +96,8 @@ def sendMessageVerdict(messageId: str, conversationID: str, verdict: int):
     }
     
     message_body = json.dumps(message_content)
+
+    print(f"(OUT) SENDING MSG: {message_body} \n")
     
     outbound_msg = messaging_service.message_builder() \
             .with_application_message_type("text") \
