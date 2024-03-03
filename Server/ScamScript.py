@@ -13,7 +13,7 @@ tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
 model = DistilBertForSequenceClassification.from_pretrained(path + "\\trained1")
 
 def scamcheck(text):
-    text = re.sub(LinkLookup.parseurl(text), text)
+    text = text.replace(LinkLookup.parseurl(text), '')
     print(text)
     tokenized_message = tokenizer(text, truncation=True, padding=True, return_tensors="pt")
 
