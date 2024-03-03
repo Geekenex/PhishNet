@@ -55,6 +55,6 @@ def messageProcessingLoop():
         messageBody = messageRaw.get_payload_as_string()
         message = json.loads(messageBody)
         print("Received message: " + message["messageId"] + ", conversation: " + message["conversationId"] + ", msg:" + message["message"])
-        verdict = ScamScript.scamcheck(message["message"])
+        verdict = ScamScript.combinedcheck(message["message"])
         sender.sendMessageVerdict(message["messageId"], message["conversationId"], verdict)
         persistent_receiver.ack(messageRaw)

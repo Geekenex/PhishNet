@@ -1,6 +1,8 @@
 import os
 
 import torch
+import LinkLookup
+
 
 from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + "\Model"
@@ -15,4 +17,11 @@ def scamcheck(text):
         outputs = model(**tokenized_message)
         predicted_label = torch.argmax(outputs.logits, dim=1).item()
 
-    print(predicted_label)
+    return predicted_label
+
+
+
+def combinedcheck(text):
+    if (scamcheck(text)+ LinkLookup.passtext(text)>=1):
+        return 1
+    return 0

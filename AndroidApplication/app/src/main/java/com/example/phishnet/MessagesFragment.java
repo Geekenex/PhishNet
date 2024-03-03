@@ -90,26 +90,7 @@ public class MessagesFragment extends Fragment {
 
     private void displayMessage(SMSMessage message){
         //Sender.sendMessageAsync(message.getMessage(), 1, message.getId());
-        boolean convoExists = false;
-        for (Conversation convo: conversationStack) {
-            if (convo.getPhoneNumber().equals(message.getPhoneNumber())){
-                convo.getSmsMessages().add(message);
-                convoExists = true;
-                Conversation temp = conversationStack.get(conversationStack.size() - 1);
-                int index = conversationStack.indexOf(convo);
-                conversationStack.set(conversationStack.size() - 1, convo);
-                conversationStack.set(index, temp);
-
-            }
-        }
-        // If the conversation did not exist before, create a new one.
-        if (!convoExists){
-            ArrayList<SMSMessage> tempMessages = new ArrayList<>();
-            tempMessages.add(message);
-            Conversation convo = new Conversation(tempMessages, message.getPhoneNumber());
-            conversationStack.push(convo);
-        }
-
+        ConversationsData.addMessageToConversation(message);
         Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         conversationsRecyclerAdapter.notifyDataSetChanged();
         ConversationsData.saveConversations(getContext());

@@ -14,4 +14,5 @@
     <string name="default_messages_fragment">Messages will appear here</string>
     <string name="message_fragment_label">Your Conversations</string>
     <string name="hint_message">Type a message...</string>
+    <string name="send">Send</string>
 </resources>
