@@ -14,6 +14,7 @@ public class SMSMessageListener implements SMSReceiver.MessageListenerInterface 
     @Override
     public void messageReceived(SMSMessage message) {
         newestMessage = message;
+        ConversationsData.addMessageToConversation(message);
         message.setReceived(true);
         // TODO conversationId
         //Sender.sendMessageAsync(message.getMessage(), UUID.randomUUID() , message.getId());
