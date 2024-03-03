@@ -1,7 +1,5 @@
 package com.example.phishnet;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -32,6 +30,7 @@ public class Sender {
             MqttMessage mqttMessage = new MqttMessage(String.format("{\"message\":\"%s\",\"messageId\":\"%s\",\"conversationId\":\"%s\"}",message,messageId,conversationId).getBytes());
             mqttMessage.setQos(2);
             mqttClient.publish(topicName, mqttMessage);
+            System.out.println("Message published");
             mqttClient.disconnect();
 
         } catch (MqttException e) {
