@@ -77,6 +77,10 @@ public class MessagesFragment extends Fragment {
         conversationsRecyclerAdapter.setOnClickListener(new ConversationsRecyclerAdapter.OnClickListener(){
             @Override
             public void onClick(int position, Conversation conversation) {
+                // Passing the data to the
+                Toast.makeText(requireActivity().getApplicationContext(), conversation.getPhoneNumber(), Toast.LENGTH_LONG).show();
+              //  intent.putExtra(NEXT_SCREEN, conversation);
+              //  startActivity(intent);
                 Bundle bundle = new Bundle();
                 bundle.putString("conversationID", String.valueOf(conversation.getId()));
                 NavHostFragment.findNavController(MessagesFragment.this)
@@ -87,6 +91,8 @@ public class MessagesFragment extends Fragment {
 
     private void displayMessage(SMSMessage message){
         message.setReceived(true);
+        //ConversationsData.addMessageToConversation(message);
+        Toast.makeText(getActivity().getApplicationContext(), message.getId() + ": " +  message.getMessage(), Toast.LENGTH_LONG).show();
         conversationsRecyclerAdapter.notifyDataSetChanged();
         ConversationsData.saveConversations(getContext());
     }
