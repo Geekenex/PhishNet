@@ -42,19 +42,16 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
         String messageText = messageObject.getMessage();
         holder.message.setText(messageText);
 
-
+        LinearLayout layout = holder.itemView.findViewById(R.id.innerLayout);
 
         if (messageObject.isReceived()){
             holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray));
-           // holder.itemView.setForegroundGravity(Gravity.START);
-            ((LinearLayout) holder.itemView).setGravity(Gravity.START);
+            holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.shape));
         }
         else {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.blue));
-            ((LinearLayout) holder.itemView).setGravity(Gravity.END);
+            holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.blue_shape));
         }
-
-
     }
 
     @Override

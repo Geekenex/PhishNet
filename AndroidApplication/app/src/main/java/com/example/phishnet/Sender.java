@@ -1,4 +1,4 @@
-package com.example.phishnet;
+/**package com.example.phishnet;
 
 import com.solace.messaging.MessagingService;
 import com.solace.messaging.config.profile.ConfigurationProfile;
@@ -56,4 +56,4 @@ public class Sender {
         // Cleanup - gracefully shutdown the messaging service
         messagingService.disconnect();
     }
-}
+}**/
