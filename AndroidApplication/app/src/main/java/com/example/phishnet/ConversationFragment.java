@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,13 +75,7 @@ public class ConversationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        SMSMessageListener.callbacks.add(new Runnable() {
-            @Override
-            public void run() {
-                messagesRecyclerAdapter.notifyDataSetChanged();
-                recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
-            }
-        });
+
         return inflater.inflate(R.layout.fragment_conversation, container, false);
     }
 
@@ -92,6 +87,19 @@ public class ConversationFragment extends Fragment {
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
 
         toolbar.setTitle(mConversation.getPhoneNumber());
+
+        SMSMessageListener.callbacks.add(new Runnable() {
+            @Override
+            public void run() {
+                messagesRecyclerAdapter.notifyDataSetChanged();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        scroll();
+                    }
+                }, 200);
+            }
+        });
 
         EditText inputField = getView().findViewById(R.id.edit_text_message);
         Button submitButton = getView().findViewById(R.id.button_send);
@@ -111,7 +119,7 @@ public class ConversationFragment extends Fragment {
                     ConversationsData.saveConversations(getContext());
                     messagesRecyclerAdapter.notifyDataSetChanged();
                     inputField.setText("");
-                    recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
+                    scroll();
                     inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 }
@@ -119,6 +127,10 @@ public class ConversationFragment extends Fragment {
             }
         });
         setAdapter();
+        scroll();
+    }
+
+    private void scroll(){
         recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
     }
 
