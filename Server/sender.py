@@ -88,10 +88,11 @@ publisher.set_message_publish_receipt_listener(receipt_listener)
 # Prepare the destination topic
 topic = Topic.of(SOLACE_SENDING_QUEUE_NAME)
 
-def sendMessageVerdict(id: int, verdict: int): 
+def sendMessageVerdict(messageId: str, conversationID: str, verdict: int): 
 
     message_content = {
-        "messageId":  id,
+        "messageId":  messageId,
+        "conversationId": conversationID,
         "verdict":  verdict
     }
     
