@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 
-public class MessagesFragment extends Fragment implements SMSReceiver.MessageListenerInterface {
+public class MessagesFragment extends Fragment {
 
     public FragmentMessagesBinding binding;
 
@@ -37,9 +37,14 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        SMSReceiver.bindListener(this);
-        binding = FragmentMessagesBinding.inflate(inflater, container, false);
 
+        binding = FragmentMessagesBinding.inflate(inflater, container, false);
+        SMSMessageListener.callbacks.add(new Runnable() {
+            @Override
+            public void run() {
+                displayMessage(SMSMessageListener.newestMessage);
+            }
+        });
         return binding.getRoot();
 
     }
@@ -83,32 +88,8 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
-    private void createList() {
-        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
-        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash :)"));
-
-        conversationStack.push(new Conversation(convo1, "514-625-5276"));
-    }
-
-    @Override
-    public void messageReceived(SMSMessage message) {
-        message.setReceived(true);
-        // Send to server first before adding to recycler
+    private void displayMessage(SMSMessage message){
         Sender.sendMessageAsync(message.getMessage(), 1, message.getId());
-        displayMessage(message);
-        TextView emptyMessages = requireView().findViewById(R.id.empty_messages);
-        emptyMessages.setVisibility(View.INVISIBLE);
-    }
-
-    public void displayMessage(SMSMessage message){
         boolean convoExists = false;
         for (Conversation convo: conversationStack) {
             if (convo.getPhoneNumber().equals(message.getPhoneNumber())){
@@ -133,5 +114,25 @@ public class MessagesFragment extends Fragment implements SMSReceiver.MessageLis
         conversationsRecyclerAdapter.notifyDataSetChanged();
         ConversationsData.saveConversations(getContext());
     }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    private void createList() {
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash"));
+        convo1.add(new SMSMessage("514-625-5276", "Hey want free cash :)"));
+
+        conversationStack.push(new Conversation(convo1, "514-625-5276"));
+    }
+
+
+
+
 }
 

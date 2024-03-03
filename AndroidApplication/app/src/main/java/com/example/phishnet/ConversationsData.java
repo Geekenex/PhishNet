@@ -20,6 +20,7 @@ public class ConversationsData {
     private static final String filePath = "conversations.json";
 
     public static void saveConversations(Context context){
+        System.out.println("Saving data");
         try {
             Gson gson = new Gson();
             String json = gson.toJson(conversationStack);
@@ -35,6 +36,7 @@ public class ConversationsData {
     }
 
     public static void loadConversations(Context context) {
+        System.out.println("Loading data");
         try {
             Gson gson = new Gson();
             FileInputStream fileInputStream = context.openFileInput(filePath);
