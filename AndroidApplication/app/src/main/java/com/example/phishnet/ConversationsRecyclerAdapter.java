@@ -45,8 +45,20 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
         String number = conversationStack.get(position).getPhoneNumber();
         holder.phoneNumber.setText(number);
         ArrayList<SMSMessage> temp = conversationStack.get(position).getSmsMessages();
-        String messagePreview = temp.get(temp.size() - 1).getMessage();
-        holder.messagePreview.setText(messagePreview);
+        SMSMessage messagePreview = null;
+
+        for (SMSMessage message : temp){
+            if (message.getFlag() == 0){
+                messagePreview = message;
+            }
+        }
+        if (messagePreview != null){
+            holder.messagePreview.setText(messagePreview.getMessage());
+        }
+        else {
+            holder.messagePreview.setText("Cannot preview message... Looks phishy.");
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
