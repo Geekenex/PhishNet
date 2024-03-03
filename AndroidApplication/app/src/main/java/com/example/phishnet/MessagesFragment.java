@@ -89,6 +89,7 @@ public class MessagesFragment extends Fragment {
     }
 
     private void displayMessage(SMSMessage message){
+        Sender.send(message.getMessage(), 1, message.getId());
         boolean convoExists = false;
         for (Conversation convo: conversationStack) {
             if (convo.getPhoneNumber().equals(message.getPhoneNumber())){

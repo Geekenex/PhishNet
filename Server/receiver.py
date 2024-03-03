@@ -47,13 +47,6 @@ persistent_receiver= messaging_service.create_persistent_message_receiver_builde
                 .build(durable_exclusive_queue)
 persistent_receiver.start()		
 
-
-def processMessage(messageBody):
-    if len(messageBody) > 0 and messageBody[0] == "a":
-        return 1
-    else:
-        return 0
-
 def messageProcessingLoop():
     while True:
         messageRaw = persistent_receiver.receive_message(1000)
@@ -61,7 +54,7 @@ def messageProcessingLoop():
             continue
         messageBody = messageRaw.get_payload_as_string()
         message = json.loads(messageBody)
-        print("Received message: " + str(message["messageId"]) + ", " + message["message"])
+        print("Received message: " + message["messageId"] + ", conversation: " + message["conversationId"] + ", msg:" + message["message"])
         verdict = ScamScript.scamcheck(message["message"])
-        sender.sendMessageVerdict(message["messageId"], verdict)
+        sender.sendMessageVerdict(message["messageId"], message["conversationId"], verdict)
         persistent_receiver.ack(messageRaw)
