@@ -49,7 +49,7 @@ public class SMSMessage implements Serializable {
 
     public void setReceived(boolean received) {
         this.received = received;
-        if (received)
+        if (!received)
             this.setFlag(0);
     }
 
