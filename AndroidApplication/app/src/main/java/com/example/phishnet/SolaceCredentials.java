@@ -1,4 +1,4 @@
-/**package com.example.phishnet;
+package com.example.phishnet;
 
 import android.content.Context;
 import java.io.BufferedReader;
@@ -45,4 +45,3 @@ public class SolaceCredentials {
         }
     }
 }
-**/

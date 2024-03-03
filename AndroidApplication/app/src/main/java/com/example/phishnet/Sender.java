@@ -12,11 +12,11 @@ import java.util.UUID;
 
 public class Sender {
 
-    public static void sendMessageAsync(String message, int conversationId, UUID messageId) {
+    public static void sendMessageAsync(String message, UUID conversationId, UUID messageId) {
         new Thread(() -> send(message, conversationId, messageId)).start();
     }
 
-    public static void send(String message, int conversationId, UUID messageId) {
+    public static void send(String message, UUID conversationId, UUID messageId) {
         MqttClient mqttClient;
 
         
@@ -29,7 +29,7 @@ public class Sender {
             mqttClient.connect(connectionOptions);
 
             String topicName = "Messages";
-            MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+            MqttMessage mqttMessage = new MqttMessage(String.format("{\"message\":\"%s\",\"messageId\":\"%s\",\"conversationId\":\"%s\"}",message,messageId,conversationId).getBytes());
             mqttMessage.setQos(2);
             mqttClient.publish(topicName, mqttMessage);
             mqttClient.disconnect();

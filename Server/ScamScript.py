@@ -2,6 +2,7 @@ import os
 
 import torch
 import LinkLookup
+import re
 
 
 from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
@@ -12,7 +13,10 @@ tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')
 model = DistilBertForSequenceClassification.from_pretrained(path + "\\trained1")
 
 def scamcheck(text):
+    text = re.sub(LinkLookup.parseurl(text), text)
+    print(text)
     tokenized_message = tokenizer(text, truncation=True, padding=True, return_tensors="pt")
+
     with torch.no_grad():
         outputs = model(**tokenized_message)
         predicted_label = torch.argmax(outputs.logits, dim=1).item()
@@ -22,6 +26,6 @@ def scamcheck(text):
 
 
 def combinedcheck(text):
-    if (scamcheck(text)* LinkLookup.passtext(text)==1):
+    if (scamcheck(text)+ LinkLookup.passtext(text)>=1):
         return 1
     return 0

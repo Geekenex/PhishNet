@@ -48,7 +48,23 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        //SolaceCredentials.getCredentials(this);
+        SolaceCredentials.getCredentials(this);
+
+        Receiver.startReceiving();
+        new Thread(() -> {
+            while(true) {
+                // Receive message
+                String message = Receiver.getNextMessage();
+
+                // Update stored message if its not a scam/spam
+
+                // Update lastEmpty if no message was found
+                if(message == null || message.isEmpty()) Thread.yield();
+                else System.out.println(message);
+            }
+        }).start();
+
+
     }
 
     @Override
