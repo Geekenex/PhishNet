@@ -14,15 +14,12 @@ public class SMSMessageListener implements SMSReceiver.MessageListenerInterface 
     @Override
     public void messageReceived(SMSMessage message) {
         newestMessage = message;
+        ConversationsData.addMessageToConversation(message);
         message.setReceived(true);
-        // TODO conversationId
-        Sender.sendMessageAsync(message.getMessage(), UUID.randomUUID() , message.getId());
+        Sender.sendMessageAsync(message.getMessage(), message.getConversationId() , message.getId());
         for (Runnable callback : callbacks){
             callback.run();
         }
-        //displayMessage(message);
-        //TextView emptyMessages = requireView().findViewById(R.id.empty_messages);
-        //emptyMessages.setVisibility(View.INVISIBLE);
     }
 
 
