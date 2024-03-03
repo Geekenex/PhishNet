@@ -9,7 +9,6 @@ public class SolaceCredentials {
     public static String SOLACE_HOST = "";
     public static String SOLACE_USERNAME = "";
     public static String SOLACE_PASSWORD = "";
-    public static String SOLACE_VPN = "";
     public static String SOLACE_RECEIVING_QUEUE_NAME = "";
     public static String SOLACE_SENDING_QUEUE_NAME = "";
 
@@ -30,9 +29,6 @@ public class SolaceCredentials {
                             break;
                         case "SOLACE_PASSWORD":
                             SOLACE_PASSWORD = parts[1];
-                            break;
-                        case "SOLACE_VPN":
-                            SOLACE_VPN = parts[1];
                             break;
                         case "SOLACE_RECEIVING_QUEUE_NAME":
                             SOLACE_RECEIVING_QUEUE_NAME = parts[1];
