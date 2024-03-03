@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RECEIVE_SMS_CODE = 100;
+    private static final int SEND_SMS_CODE = 101;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
         checkPermission(Manifest.permission.RECEIVE_SMS, RECEIVE_SMS_CODE);
-
+        checkPermission(Manifest.permission.SEND_SMS, SEND_SMS_CODE);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -103,6 +104,14 @@ public class MainActivity extends AppCompatActivity {
                 grantResults);
 
         if (requestCode == RECEIVE_SMS_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(MainActivity.this, "Receive SMS Permission Granted", Toast.LENGTH_SHORT) .show();
+            }
+            else {
+                Toast.makeText(MainActivity.this, "Receive SMS  Permission Denied", Toast.LENGTH_SHORT) .show();
+            }
+        }
+        if (requestCode == SEND_SMS_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(MainActivity.this, "Receive SMS Permission Granted", Toast.LENGTH_SHORT) .show();
             }

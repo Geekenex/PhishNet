@@ -1,5 +1,6 @@
 package com.example.phishnet;
 
+import android.annotation.SuppressLint;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
         return new ViewHolder(itemView);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerAdapter.ViewHolder holder, int position) {
         SMSMessage messageObject = messageArrayList.get(position);

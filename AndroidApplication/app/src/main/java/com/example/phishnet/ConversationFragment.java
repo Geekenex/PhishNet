@@ -2,6 +2,7 @@ package com.example.phishnet;
 
 import static com.example.phishnet.ConversationsData.conversationStack;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,9 +11,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +68,7 @@ public class ConversationFragment extends Fragment {
             @Override
             public void run() {
                 messagesRecyclerAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
             }
         });
     }
@@ -77,10 +83,40 @@ public class ConversationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = getView().findViewById(R.id.conversation_messages_recycler);
+
+
         TextView phoneNumber = getView().findViewById(R.id.phoneNumberConversationTitle);
         phoneNumber.setText(mConversation.getPhoneNumber());
-        setAdapter();
+        EditText inputField = getView().findViewById(R.id.edit_text_message);
+        Button submitButton = getView().findViewById(R.id.button_send);
+        InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String inputString = inputField.getText().toString();
+                if (!inputString.isEmpty() || !inputString.equals("")){
+                    mConversation.getSmsMessages().add(new SMSMessage(mConversation.getPhoneNumber(), inputString));
 
+                    Conversation temp = conversationStack.get(conversationStack.size() - 1);
+                    int index = conversationStack.indexOf(mConversation);
+                    conversationStack.set(conversationStack.size() - 1, mConversation);
+                    conversationStack.set(index, temp);
+
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(mConversation.getPhoneNumber(), null, inputString, null, null);
+
+                    ConversationsData.saveConversations(getContext());
+                    messagesRecyclerAdapter.notifyDataSetChanged();
+                    inputField.setText("");
+                    recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
+                    inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                }
+
+            }
+        });
+        setAdapter();
+        recyclerView.scrollToPosition(mConversation.getSmsMessages().size() - 1);
     }
 
 
