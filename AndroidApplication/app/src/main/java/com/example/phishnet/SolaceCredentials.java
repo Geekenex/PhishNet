@@ -19,7 +19,7 @@ public class SolaceCredentials {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("=");
+                String[] parts = line.replaceAll("\"","").split("=");
                 if (parts.length == 2) { // Ensure there are exactly two parts
                     switch (parts[0]) {
                         case "SOLACE_HOST":
