@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+// Followed https://www.tutorialspoint.com/android/android_sending_sms.htm
 public class SMSReceiver extends BroadcastReceiver {
     public static String SMS_RECEIVE = "android.provider.Telephony.SMS_RECEIVED";
     private static MessageListenerInterface mListener;
@@ -21,14 +21,14 @@ public class SMSReceiver extends BroadcastReceiver {
             String strMessage = "";
             String format = bundle.getString("format");
 
-            // Retrieve the SMS message received.
+
             Object[] pdus = (Object[]) bundle.get("pdus");
             if (pdus != null) {
-                // Fill the msgs array.
+
                 msgs = new SmsMessage[pdus.length];
                 for (int i = 0; i < msgs.length; i++) {
                     msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
-                    // Build the message to show.
+
                     strMessage += "SMS from " + msgs[i].getOriginatingAddress();
                     strMessage += " :" + msgs[i].getMessageBody() + "\n";
 
