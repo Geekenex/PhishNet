@@ -1,8 +1,7 @@
 package com.example.phishnet;
 
-import androidx.arch.core.util.Function;
-
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class SMSMessageListener implements SMSReceiver.MessageListenerInterface {
     public SMSMessageListener(){
@@ -16,7 +15,8 @@ public class SMSMessageListener implements SMSReceiver.MessageListenerInterface 
     public void messageReceived(SMSMessage message) {
         newestMessage = message;
         message.setReceived(true);
-        // Send to server first before adding to recycler
+        // TODO conversationId
+        Sender.sendMessageAsync(message.getMessage(), UUID.randomUUID() , message.getId());
         for (Runnable callback : callbacks){
             callback.run();
         }
