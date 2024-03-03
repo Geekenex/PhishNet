@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SMSMessageListener smsReceiver = new SMSMessageListener();
 
         setSupportActionBar(binding.toolbar);
         checkPermission(Manifest.permission.RECEIVE_SMS, RECEIVE_SMS_CODE);

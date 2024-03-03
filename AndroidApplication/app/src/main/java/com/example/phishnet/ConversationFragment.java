@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -40,8 +42,6 @@ public class ConversationFragment extends Fragment {
     private void setAdapter(){
         messagesRecyclerAdapter = new MessagesRecyclerAdapter(mConversation.getSmsMessages());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(messagesRecyclerAdapter);
@@ -58,6 +58,13 @@ public class ConversationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         String conversationID = getArguments().getString(ARG_CONVERSATION);
         mConversation = ConversationsData.getConversationById(UUID.fromString(conversationID));
+
+        SMSMessageListener.callbacks.add(new Runnable() {
+            @Override
+            public void run() {
+                messagesRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -75,4 +82,6 @@ public class ConversationFragment extends Fragment {
         setAdapter();
 
     }
+
+
 }
