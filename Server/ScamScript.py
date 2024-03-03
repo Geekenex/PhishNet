@@ -22,6 +22,6 @@ def scamcheck(text):
 
 
 def combinedcheck(text):
-    if (scamcheck(text)* LinkLookup.passtext(text)==1):
+    if (scamcheck(text)+ LinkLookup.passtext(text)>=1):
         return 1
     return 0
