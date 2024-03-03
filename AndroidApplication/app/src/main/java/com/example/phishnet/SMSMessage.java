@@ -8,7 +8,7 @@ public class SMSMessage implements Serializable {
     private String message;
     private UUID id;
     private UUID conversationId;
-    private boolean received = false;
+    private boolean received = true;
     private int flag;
 
 

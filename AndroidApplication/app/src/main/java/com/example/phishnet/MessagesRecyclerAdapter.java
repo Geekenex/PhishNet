@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.ViewHolder> {
     private ArrayList<SMSMessage> messageArrayList;
     public MessagesRecyclerAdapter(ArrayList<SMSMessage> messageArrayList) {
-        messageArrayList = (ArrayList<SMSMessage>) messageArrayList.stream().filter(message -> message.getFlag() == 0).collect(Collectors.toList());
         this.messageArrayList = messageArrayList;
     }
 
@@ -41,9 +40,12 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerAdapter.ViewHolder holder, int position) {
         SMSMessage messageObject = messageArrayList.get(position);
-
-      //  if (messageObject.getFlag() != 1){
-            String messageText = messageObject.getMessage();
+        int flag = messageObject.getFlag();
+        boolean received = messageObject.isReceived();
+        String messageText = messageObject.getMessage();
+        if (flag == 0 || !received){
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             holder.message.setText(messageText);
 
             LinearLayout layout = (LinearLayout) holder.itemView.findViewById(R.id.innerLayout);
@@ -56,7 +58,12 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
                 layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.blue_shape));
                 ((LinearLayout) holder.itemView).setGravity(Gravity.END);
             }
-    //    }
+        }
+        else {
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+        }
+
     }
 
     @Override
